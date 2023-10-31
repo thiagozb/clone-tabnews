@@ -5,15 +5,20 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
+    "docker:list": "sudo docker ps",
+    "docker:psql": "psql --host=localhost --username=postgres --port=5434",
+    "docker:stop": "sudo docker compose -f infra/compose.yaml stop",
+    "docker:up": "sudo docker compose -f infra/compose.yaml up -d",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch --verbose"
+    "test:watch": "jest --watchAll --verbose"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "next": "^13.1.6",
+    "pg": "^8.11.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
