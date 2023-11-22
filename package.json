@@ -4,13 +4,16 @@
   "description": "Implementação do https://tabnews.com para o https://curso.dev",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run services:up && next dev",
     "docker:list": "sudo docker ps",
     "docker:psql": "psql --host=localhost --username=postgres --port=5434",
     "docker:stop": "sudo docker compose -f infra/compose.yaml stop",
     "docker:up": "sudo docker compose -f infra/compose.yaml up -d",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
+    "services:down": "docker compose -f infra/compose.yaml down",
+    "services:stop": "docker compose -f infra/compose.yaml stop",
+    "services:up": "docker compose -f infra/compose.yaml up -d",
     "test": "jest",
     "test:watch": "jest --watchAll --verbose"
   },
