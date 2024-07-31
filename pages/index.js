@@ -6,7 +6,12 @@ function Home() {
     <>
       <header>
         <div>
-          <Image src={reviewIcon} width={24} height={24} />
+          <Image
+            alt="Ícone TabReviews"
+            src={reviewIcon}
+            width={24}
+            height={24}
+          />
           <span>TabReviews</span>
         </div>
       </header>
