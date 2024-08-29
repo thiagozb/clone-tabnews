@@ -19,6 +19,7 @@
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:wait:database": "node infra/scripts/wait-for-postgres.js",
     "test": "npm run services:up && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\"",
+    "posttest": "npm run services:stop",
     "test:watch": "npm run services:up && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose --watchAll\"",
     "prepare": "husky",
     "commit": "cz"
