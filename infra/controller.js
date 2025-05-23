@@ -1,12 +1,9 @@
-// import { createRouter } from "next-connect";
-import { InternalServerError, MethodNotAllowedError } from "infra/errors";
-
-// const router = createRouter();
-
-// export default router.handler({
-//   onNoMatch: onNoMatchHandler,
-//   onError: onErrorHandler,
-// });
+import {
+  InternalServerError,
+  MethodNotAllowedError,
+  ValidationError,
+  NotFoundError,
+} from "infra/errors";
 
 function onNoMatchHandler(request, response) {
   const publicErrorObject = new MethodNotAllowedError();
@@ -14,6 +11,14 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
+  if (error instanceof ValidationError) {
+    return response.status(error.statusCode).json(error);
+  }
+
+  if (error instanceof NotFoundError) {
+    return response.status(error.statusCode).json(error);
+  }
+
   const publicErrorObject = new InternalServerError({
     statusCode: error.statusCode,
     cause: error,
