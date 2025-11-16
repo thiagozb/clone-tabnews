@@ -29,7 +29,7 @@ describe("GET /api/v1/users/[username]", () => {
         username: "UsernameCaseMatch",
         email: "usernamecasematch@gmail.com",
         password: responseBody.password,
-        features: [],
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -58,7 +58,7 @@ describe("GET /api/v1/users/[username]", () => {
         username: "UsernameCaseMismatch",
         email: "usernamecasemismatch@gmail.com",
         password: responseBody.password,
-        features: [],
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
