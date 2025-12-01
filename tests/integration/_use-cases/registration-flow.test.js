@@ -1,6 +1,7 @@
 import orchestrator from "tests/orchestrator.js";
 import webserver from "infra/webserver.js";
 import activation from "models/activation.js";
+import user from "models/user.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -11,6 +12,7 @@ beforeAll(async () => {
 
 describe("Use case: Registration Flow (all successful)", () => {
   let createdUserResponseBody;
+  let activationTokenId;
 
   test("Create user account", async () => {
     const createdUserResponse = await fetch(
@@ -45,26 +47,35 @@ describe("Use case: Registration Flow (all successful)", () => {
 
   test("Receive activation email", async () => {
     const lastEmail = await orchestrator.getLastEmail();
-
     expect(lastEmail.sender).toBe("<contato@tabreviews.com.br>");
     expect(lastEmail.recipients[0]).toBe("<registration.flow@gmail.com>");
     expect(lastEmail.subject).toBe("Ative seu cadastro no TabReviews!");
     expect(lastEmail.text).toContain("RegistrationFlow");
 
-    const activationTokenId = orchestrator.extractUUID(lastEmail.text);
-
+    activationTokenId = orchestrator.extractUUID(lastEmail.text);
     expect(lastEmail.text).toContain(
       `${webserver.origin}/cadastro/ativar/${activationTokenId}`,
     );
 
     const activationTokenObject =
       await activation.findOneValidById(activationTokenId);
-
     expect(activationTokenObject.user_id).toBe(createdUserResponseBody.id);
     expect(activationTokenObject.used_at).toBe(null);
   });
 
-  test("Activate user account", async () => {});
+  test("Activate user account", async () => {
+    const activationResponse = await fetch(
+      `http://localhost:3000/api/v1/activations/${activationTokenId}`,
+      { method: "PATCH" },
+    );
+    expect(activationResponse.status).toBe(200);
+
+    const activationResponseBody = await activationResponse.json();
+    expect(Date.parse(activationResponseBody.used_at)).not.toBeNaN();
+
+    const activatedUser = await user.findOneByUsername("RegistrationFlow");
+    expect(activatedUser.features).toEqual(["create:session"]);
+  });
 
   test("Login", async () => {});
 
