@@ -80,14 +80,14 @@ describe("models/authorization.js", () => {
         features: ["read:user"],
       };
 
-      const createAndUpdateAtDates = new Date().toISOString();
+      const createAtAndUpdateAtDates = new Date().toISOString();
 
       const resource = {
         id: 1,
         username: "resourceTestUser",
         features: ["read:feature"],
-        created_at: createAndUpdateAtDates,
-        updated_at: createAndUpdateAtDates,
+        created_at: createAtAndUpdateAtDates,
+        updated_at: createAtAndUpdateAtDates,
         email: "resourcetestuser@resource.com",
         password: "resourcetestpassword",
       };
