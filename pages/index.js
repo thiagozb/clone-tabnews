@@ -1,5 +1,5 @@
 import Image from "next/image";
-import reviewIcon from "/public/review.png";
+import reviewIcon from "public/review.png";
 import { Analytics } from "@vercel/analytics/next";
 
 function Home() {
