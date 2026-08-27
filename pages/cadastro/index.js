@@ -1,62 +1,71 @@
-import useSWR from "swr";
+import { useState } from "react";
+import { Button } from "@primer/react";
+import DefaultLayout from "interface/DefaultLayout";
 
-async function fetchAPI(key) {
-  const response = await fetch(key);
-  const responseBody = await response.json();
-  return responseBody;
-}
+export default function RegisterPage() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-export default function StatusPage() {
-  return (
-    <>
-      <h1>Status</h1>
-      <UpdatedAt />
-      <DatabaseStatus />
-    </>
-  );
-}
+  async function handleSubmit(event) {
+    event.preventDefault();
 
-function UpdatedAt() {
-  const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
-    refreshInterval: 2000,
-    dedupingInterval: 2000,
-  });
+    const requestBody = { username, email, password };
 
-  let updatedAtText = "Carregando...";
+    const response = await fetch("/api/v1/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-  if (!isLoading && data) {
-    updatedAtText = new Date(data.updated_at).toLocaleString("pt-BR");
-  }
-
-  return <div>Última atualização: {updatedAtText}</div>;
-}
-
-function DatabaseStatus() {
-  const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
-    refreshInterval: 2000,
-    dedupingInterval: 2000,
-  });
-
-  let databaseStatusInformation = "Carregando...";
-
-  if (!isLoading && data) {
-    databaseStatusInformation = (
-      <>
-        <div>Versão: {data.dependencies.database.version}</div>
-        <div>
-          Conexões abertas: {data.dependencies.database.opened_connections}
-        </div>
-        <div>
-          Conexões máximas: {data.dependencies.database.max_connections}
-        </div>
-      </>
-    );
+    if (response.status === 201) {
+      location.href = "/cadastro/confirmar";
+    }
   }
 
   return (
-    <>
-      <h2>Database</h2>
-      <div>{databaseStatusInformation}</div>
-    </>
+    <DefaultLayout
+      metadata={{
+        title: "Cadastro",
+        description: "Crie sua conta de forma gratuita.",
+      }}
+    >
+      <h1>Cadastro</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          Nome de usuário:
+          <input
+            type="text"
+            value={username}
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
+          />
+        </div>
+        <div>
+          Email:
+          <input
+            type="text"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+          />
+        </div>
+        <div>
+          Senha:
+          <input
+            type="password"
+            value={password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+          />
+        </div>
+        <Button type="submit">Criar cadastro</Button>
+      </form>
+    </DefaultLayout>
   );
 }
